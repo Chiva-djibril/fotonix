@@ -19,11 +19,16 @@ export default function Register() {
       await register(form);
       toast.success(t("auth.toastAccountCreated"));
       navigate("/dashboard");
-    } catch (err) {
-      toast.error(err.response?.data?.error || t("auth.toastRegisterFailed"));
-    } finally {
-      setBusy(false);
-    }
+    } // In your catch block, replace whatever you have with:
+catch (err) {
+  const errorMessage = 
+    (typeof err.response?.data?.error === "string" && err.response.data.error) ||
+    (typeof err.response?.data?.message === "string" && err.response.data.message) ||
+    (typeof err.message === "string" && err.message) ||
+    "Registration failed. Please try again.";
+  
+  toast.error(errorMessage);
+}
   }
 
   return (

@@ -20,7 +20,15 @@ export default function Login() {
       toast.success(t("auth.toastWelcomeBack"));
       navigate(location.state?.from?.pathname || "/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.error || t("auth.toastLoginFailed"));
+      // ✅ FIXED: Safely extract error message as STRING
+      const errorMessage = 
+        (typeof err.response?.data?.error === "string" && err.response.data.error) ||
+        (typeof err.response?.data?.message === "string" && err.response.data.message) ||
+        (typeof err.message === "string" && err.message) ||
+        t("auth.toastLoginFailed") ||
+        "Login failed. Please try again.";
+      
+      toast.error(errorMessage);
     } finally {
       setBusy(false);
     }

@@ -1,8 +1,10 @@
 import axios from "axios";
 
-// Get base URL from env, ensure /api suffix
-const rawUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+// ✅ Smart URL handling - works whether env var has /api or not
+const rawUrl = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 const baseURL = rawUrl.endsWith("/api") ? rawUrl : `${rawUrl}/api`;
+
+console.log("🔌 API Base URL:", baseURL); // Debug log - remove later
 
 const api = axios.create({
   baseURL,
@@ -14,27 +16,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// ✅ BONUS: Global error handler
+// ✅ Global error normalizer - ensures errors are always readable
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Extract clean error message
+    // Normalize error message to always be a string
     const message =
-      error.response?.data?.error ||
-      error.response?.data?.message ||
-      error.message ||
+      (typeof error.response?.data?.error === "string" && error.response.data.error) ||
+      (typeof error.response?.data?.message === "string" && error.response.data.message) ||
+      (typeof error.message === "string" && error.message) ||
       "Something went wrong";
     
-    // Attach clean message to error
     error.displayMessage = message;
-    
-    // Handle 401 - auto logout
-    if (error.response?.status === 401) {
-      localStorage.removeItem("fotonix_token");
-      // Optionally redirect to login
-      // window.location.href = "/login";
-    }
-    
     return Promise.reject(error);
   }
 );
