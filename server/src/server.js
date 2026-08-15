@@ -15,7 +15,33 @@ import albumRoutes from "./routes/albums.js";
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
+// ✅ UPDATED CORS - supports multiple origins & Vercel preview deployments
+const allowedOrigins = [
+  process.env.CLIENT_URL,                    // From Railway env var
+  "https://fotonix-app.vercel.app",          // Your main Vercel URL
+  "http://localhost:5173",                   // Local Vite dev
+  "http://localhost:3000",                   // Alternative local port
+].filter(Boolean); // Remove undefined values
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, curl)
+    if (!origin) return callback(null, true);
+    
+    // Allow all Vercel preview deployments (they have dynamic URLs)
+    if (origin.endsWith(".vercel.app")) return callback(null, true);
+    
+    // Check against allowed origins
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    console.log("❌ Blocked by CORS:", origin);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 
 const __filename = fileURLToPath(import.meta.url);
@@ -86,3 +112,7 @@ async function startServer({ dbConnected } = { dbConnected: false }) {
 
 
 
+
+git add server/src/server.js
+git commit -m "Fix CORS to support Vercel deployments"
+git push origin main
