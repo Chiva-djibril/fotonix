@@ -8,7 +8,7 @@ html {
 
 /* ---------- Typography & motion ---------- */
 :root {
-  --font-display: "Bradley Hand", cursive;
+  --font-display: "Bradley Hand";
   --font-body: "Manrope", "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
 }
