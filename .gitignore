@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+package-lock.json
+yarn.lock
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+client/dist/
+server/dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Uploads
+server/uploads/*
+!server/uploads/.gitkeep
