@@ -109,10 +109,3 @@ async function startServer({ dbConnected } = { dbConnected: false }) {
     await startServer({ dbConnected: false });
   }
 })();
-
-
-
-
-git add server/src/server.js
-git commit -m "Fix CORS to support Vercel deployments"
-git push origin main
